@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Aquatic Ecosystem Deep Explorer</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="hero" id="home">
+    <video autoplay muted loop id="bg-video">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-sea-turtle-swimming-camera-follows-1225-large.mp4" type="video/mp4">
+    </video>
+  <h1>🌊 Aquatic Ecosystem Deep Explorer 🌊</h1>
+  <div class="menu">
+    <button onclick="showPage('lifestyle')">🐠 Aquatic Lifestyle</button>
+    <button onclick="showPage('importance')">🌎 Importance</button>
+    <button onclick="showPage('destruction')">⚠️ Destruction</button>
+    <button onclick="showPage('game')">🎮 Game</button>
+  </div>
+</div>
+
+<!-- LIFESTYLE PAGE -->
+<div id="lifestyle" class="page">
+  <div class="card">
+    <h2>🐟 Aquatic Lifestyle</h2>
+    <p>
+      Aquatic organisms live in water and have special adaptations that help them survive.
+      Most fish breathe using <b>gills</b> which absorb oxygen from water. Their <b>fins</b>
+      help them steer and balance while swimming.
+    </p>
+
+    <p>
+      Some animals like dolphins and whales are mammals. They breathe air using lungs
+      and must come to the surface to inhale oxygen. Many aquatic animals have
+      streamlined bodies which reduce water resistance and help them move faster.
+    </p>
+
+    <div class="fact">Amazing Fact: Sharks have been alive for more than 400 million years!</div>
+
+    <img class="image" src="https://images.unsplash.com/photo-1551041777-575d385554f1?q=80&w=2070&auto=format&fit=crop">
+    <img class="image" src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Clownfish.jpg">
+      <button class="backBtn" onclick="goHome()">⬅ Back</button>
+  </div>
+</div>
+
+<!-- IMPORTANCE PAGE -->
+<div id="importance" class="page">
+  <div class="card">
+    <h2>🌊 Why Aquatic Ecosystems Are Important</h2>
+    <p>
+      Aquatic ecosystems play a major role in maintaining Earth’s balance. Oceans absorb
+      large amounts of carbon dioxide, which helps reduce climate change. They also regulate
+      global temperatures.
+    </p>
+
+    <p>
+      Millions of people depend on oceans and rivers for food, drinking water, jobs, and transport.
+      Many medicines used to treat diseases are made from marine plants and animals.
+    </p>
+
+    <div class="fact">Did you know? More than 70% of Earth’s surface is covered by water!</div>
+
+    <img class="image" src="https://images.unsplash.com/photo-1509358271058-d34347573516?q=80&w=2070&auto=format&fit=crop">
+      <button class="backBtn" onclick="goHome()">⬅ Back</button>
+  </div>
+</div>
+
+<!-- DESTRUCTION PAGE -->
+<div id="destruction" class="page">
+    <div class="card">
+        <h2>⚠️ Destruction of Aquatic Ecosystems</h2>
+        <p>
+          Human activities are the main cause of aquatic ecosystem destruction. Plastic waste
+          often ends up in oceans and is eaten by fish and turtles, causing their death.
+        </p>
+
+        <p>
+          Oil spills create thick layers of oil that block sunlight and oxygen from reaching
+          marine plants and animals. Climate change increases ocean temperature, causing coral
+          reefs to bleach and die.
+        </p>
+
+        <div class="fact">Shocking Fact: A plastic bottle can take 450 years to decompose.</div>
+
+        <img class="image" src="https://images.unsplash.com/photo-1574304246473-3d4373a8a30b?q=80&w=2070&auto=format&fit=crop">
+        <img class="image" src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Ocean_Plastic.jpg">
+          <button class="backBtn" onclick="goHome()">⬅ Back</button>
+    </div>
+</div>
+
+<!-- GAME PAGE -->
+<div id="game" class="page">
+    <div class="card">
+  <h2>🎮 Save The Ocean</h2>
+  <p>Click 🗑️ to clean the ocean. Do NOT click 🐟</p>
+  <h3 id="score">Score: 0</h3>
+  <div id="gameBox"></div>
+  <button class="backBtn" onclick="startGame()">▶ Start Game</button>
+  <button class="backBtn" onclick="goHome()">⬅ Back</button>
+    </div>
+</div>
+
+<!-- Sounds -->
+<audio id="cleanSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
+<audio id="splashSound" src="https://www.soundjay.com/water/sounds/water-splash-1.mp3"></audio>
+
+<script src="js/main.js"></script>
+
+</body>
+</html>
