@@ -1,276 +1,345 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <title>Aquatic Ecosystem Deep Explorer — Debugged</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
-    /* ---------- Base / Reset ---------- */
-    :root{
-      --bg-light: #e8f8ff;
-      --card-light: rgba(255,255,255,0.9);
-      --accent: #00b8ff;
-      --accent-2: #0066ff;
-      --glass: rgba(255,255,255,0.6);
-      --text: #072a35;
-      --muted: #234a60;
-      --shadow: 0 8px 30px rgba(3,102,153,0.12);
-      --radius: 16px;
-    }
+<meta charset="UTF-8">
+<title>Aquatic Ecosystem Explorer</title>
+<style>
+/* -------------------------------------------------- */
+/* BASIC RESET + SMOOTH LOOK                         */
+/* -------------------------------------------------- */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Roboto",sans-serif;
+}
+body{
+  background:#0a0f1f;
+  color:#eee;
+  overflow-x:hidden;
+  transition:background 0.3s,color 0.3s;
+}
 
-    html,body{
-      height:100%;
-      margin:0;
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      background: linear-gradient(180deg, var(--bg-light) 0%, #c6eefc 100%);
-      color:var(--text);
-      transition: background 420ms cubic-bezier(.2,.9,.3,1), color 420ms;
-      overflow-x: hidden;
-    }
+/* -------------------------------------------------- */
+/* DARK/LIGHT TOGGLE                                  */
+/* -------------------------------------------------- */
+.theme-toggle{
+  position:fixed;
+  top:15px;
+  right:20px;
+  z-index:2000;
+}
+.theme-toggle input{
+  display:none;
+}
+.switch{
+  width:55px;
+  height:28px;
+  background:#333;
+  border-radius:30px;
+  display:inline-block;
+  position:relative;
+  cursor:pointer;
+  transition:0.3s;
+}
+.switch::after{
+  content:"🌙";
+  width:24px;
+  height:24px;
+  position:absolute;
+  left:2px;
+  top:2px;
+  background:#fff;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:16px;
+  transition:0.3s;
+}
+#themeSwitch:checked + .switch {
+  background:#ddd;
+}
+#themeSwitch:checked + .switch::after{
+  transform:translateX(27px);
+  content:"☀️";
+}
+body.light{
+  background:#f2f2f2;
+  color:#111;
+}
 
-    /* Dark mode tokens */
-    body.dark {
-      --bg-light: #041422;
-      --card-light: rgba(8,18,28,0.62);
-      --accent: #0ff6ff;
-      --accent-2: #00bcd4;
-      --glass: rgba(255,255,255,0.02);
-      --text: #eaf8ff;
-      --muted: #9fd8ea;
-      --shadow: 0 14px 40px rgba(0,200,255,0.08);
-    }
+/* -------------------------------------------------- */
+/* HERO SECTION                                       */
+/* -------------------------------------------------- */
+.hero{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:20px;
+}
+.hero h1{
+  font-size:45px;
+  margin-bottom:30px;
+  text-shadow:0 0 12px cyan;
+  animation:pulse 3s infinite ease-in-out;
+}
+@keyframes pulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.06);}
+  100%{transform:scale(1);}
+}
 
-    /* ---------- THEME TOGGLE ---------- */
-    .theme-toggle {
-      position: fixed;
-      top: 18px;
-      right: 18px;
-      z-index: 9999;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      user-select:none;
-    }
-    .theme-toggle .tiny {
-      font-size:13px;
-      color:var(--muted);
-      transform: translateY(-2px);
-    }
-    .switch {
-      width:56px;
-      height:30px;
-      border-radius:999px;
-      background:linear-gradient(180deg,#d9d9d9,#bdbdbd);
-      position:relative;
-      box-shadow: var(--shadow);
-      cursor:pointer;
-      display:inline-block;
-      transition: background 300ms;
-      outline: none;
-    }
-    .switch:focus { box-shadow: 0 0 0 4px rgba(0,180,255,0.08); }
-    .switch__knob{
-      width:26px;
-      height:26px;
-      border-radius:50%;
-      background:linear-gradient(180deg,#fff,#f0f0f0);
-      position:absolute;
-      left:2px;
-      top:2px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:14px;
-      transition: transform 320ms cubic-bezier(.2,.9,.3,1), box-shadow 200ms;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-    }
-    .switch.checked {
-      background: linear-gradient(180deg,#333,#111);
-    }
-    .switch.checked .switch__knob {
-      transform: translateX(26px);
-      box-shadow: 0 8px 20px rgba(0,160,200,0.18), 0 0 24px rgba(0,200,255,0.08);
-    }
+/* -------------------------------------------------- */
+/* MENU BUTTONS                                       */
+/* -------------------------------------------------- */
+.menu button{
+  background:#112233;
+  border:none;
+  color:white;
+  padding:14px 22px;
+  margin:10px;
+  font-size:18px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:0.2s;
+  box-shadow:0 0 10px rgba(0,255,255,0.5);
+}
+.menu button:hover{
+  transform:scale(1.07);
+  box-shadow:0 0 18px cyan;
+}
+.menu button:active{
+  transform:scale(0.95);
+}
 
-    /* ---------- HERO ---------- */
-    .hero {
-      min-height:78vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding:60px 20px;
-      position:relative;
-      overflow:hidden;
-    }
+/* -------------------------------------------------- */
+/* PAGES                                              */
+/* -------------------------------------------------- */
+.page{
+  display:none;
+  padding:40px 20px;
+  animation:fadeIn 0.5s forwards;
+}
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1; transform:translateY(0);}
+}
 
-    /* Background video */
-    #bg-video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -2;
-      filter: saturate(120%) contrast(100%) brightness(0.95);
-      pointer-events:none;
-    }
-    /* subtle overlay for readability */
-    .hero::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: linear-gradient(180deg, rgba(0,20,30,0.25), rgba(0,10,20,0.28));
-      z-index:-1;
-      pointer-events:none;
-      transition: background 420ms;
-    }
+.card{
+  background:#0d1628;
+  padding:20px;
+  border-radius:12px;
+  max-width:900px;
+  margin:auto;
+  box-shadow:0 0 15px rgba(0,255,255,0.3);
+}
+body.light .card{
+  background:white;
+  color:black;
+}
 
-    /* floating bubbles container */
-    .bubbles {
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      z-index:-1;
-      overflow:hidden;
-    }
-    .bubble{
-      position:absolute;
-      bottom:-10%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(255,255,255,0.06));
-      border-radius:50%;
-      opacity:0.65;
-      mix-blend-mode: screen;
-      filter: blur(6px);
-      animation: rise linear infinite;
-    }
-    @keyframes rise {
-      from { transform: translateY(30vh) scale(0.7); opacity:0; }
-      10% { opacity:0.45; }
-      60% { opacity:0.9; }
-      to { transform: translateY(-140vh) scale(1.05); opacity:0; }
-    }
+/* -------------------------------------------------- */
+/* IMAGES                                             */
+/* -------------------------------------------------- */
+.image{
+  width:100%;
+  border-radius:12px;
+  margin-top:15px;
+  box-shadow:0 0 15px rgba(0,255,255,0.4);
+}
 
-    /* Pulsing title */
-    .title {
-      font-size: clamp(28px, 4vw, 44px);
-      font-weight:800;
-      letter-spacing:0.6px;
-      color:var(--text);
-      text-shadow: 0 6px 30px rgba(0,184,255,0.12);
-      margin-bottom:18px;
-      animation: pulse 2400ms infinite;
-    }
-    @keyframes pulse {
-      0% { transform: translateY(0) scale(1); text-shadow: 0 6px 20px rgba(0,184,255,0.08); }
-      50% { transform: translateY(-4px) scale(1.02); text-shadow: 0 14px 40px rgba(0,200,255,0.16); }
-      100% { transform: translateY(0) scale(1); text-shadow: 0 6px 20px rgba(0,184,255,0.08); }
-    }
+/* -------------------------------------------------- */
+/* FACT BOX                                           */
+/* -------------------------------------------------- */
+.fact{
+  background:#112233;
+  padding:12px;
+  margin:15px 0;
+  border-left:5px solid cyan;
+  border-radius:6px;
+  font-weight:bold;
+}
 
-    /* ---------- MENU ---------- */
-    .menu {
-      display:flex;
-      gap:12px;
-      justify-content:center;
-      flex-wrap:wrap;
-      margin-top:14px;
-    }
-    .menuBtn{
-      --btnBg: linear-gradient(180deg,var(--accent),var(--accent-2));
-      padding:11px 18px;
-      border-radius:12px;
-      border: none;
-      color: white;
-      font-weight:700;
-      cursor:pointer;
-      box-shadow: 0 8px 30px rgba(0,120,200,0.15);
-      transform-origin:center;
-      transition: transform 160ms cubic-bezier(.2,.9,.3,1), box-shadow 200ms, filter 180ms;
-      backdrop-filter: blur(6px);
-    }
-    .menuBtn:hover{
-      transform: translateY(-6px) scale(1.03);
-      box-shadow: 0 18px 50px rgba(0,140,220,0.18);
-      filter:brightness(1.04);
-    }
-    .menuBtn:active{
-      transform: translateY(-2px) scale(0.98);
-    }
+/* -------------------------------------------------- */
+/* BACK BUTTON                                        */
+/* -------------------------------------------------- */
+.backBtn{
+  background:#334455;
+  margin-top:20px;
+  padding:10px 16px;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  transition:0.2s;
+}
+.backBtn:hover{
+  transform:scale(1.05);
+}
 
-    /* ---------- PAGES / CARDS ---------- */
-    .page {
-      display:none;
-      padding:48px 20px;
-      min-height:60vh;
-      animation: pageIn 420ms ease;
-    }
-    .card{
-      max-width:1100px;
-      margin: 10px auto;
-      background: var(--card-light);
-      border-radius: var(--radius);
-      padding:22px;
-      box-shadow: var(--shadow);
-      transition: transform 280ms, box-shadow 280ms, background 320ms;
-    }
-    @keyframes pageIn {
-      from { transform: translateY(8px); opacity:0 }
-      to { transform: translateY(0); opacity:1 }
-    }
+/* -------------------------------------------------- */
+/* GAME                                               */
+/* -------------------------------------------------- */
+#gameBox{
+  width:100%;
+  height:300px;
+  border:2px solid cyan;
+  margin-top:15px;
+  position:relative;
+  overflow:hidden;
+  border-radius:10px;
+}
+.garbage,.fish{
+  width:55px;
+  position:absolute;
+  cursor:pointer;
+  animation:float 3s infinite ease-in-out;
+}
+@keyframes float{
+  0%{transform:translateY(0);}
+  50%{transform:translateY(-15px);}
+  100%{transform:translateY(0);}
+}
+</style>
+</head>
+<body>
 
-    h2 { font-size:20px; margin-bottom:12px; color:var(--text); }
-    p { line-height:1.55; color:var(--muted); }
+<!-- SWITCH -->
+<div class="theme-toggle">
+  <input type="checkbox" id="themeSwitch">
+  <label for="themeSwitch" class="switch"></label>
+</div>
 
-    .images-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;}
-    .images-row img{ width:100%; height:220px; object-fit:cover; border-radius:12px; transition: transform 320ms; box-shadow: 0 8px 24px rgba(0,0,0,0.08);}
-    .images-row img:hover{ transform: scale(1.03) rotate(-0.6deg); }
+<div class="hero" id="home">
+  <h1>🌊 Aquatic Ecosystem Explorer 🌊</h1>
+  <div class="menu">
+    <button onclick="showPage('lifestyle')">🐠 Lifestyle</button>
+    <button onclick="showPage('importance')">🌎 Importance</button>
+    <button onclick="showPage('destruction')">⚠️ Destruction</button>
+    <button onclick="showPage('game')">🎮 Game</button>
+  </div>
+</div>
 
-    .hiddenBox{
-      padding:12px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.7));
-      border-radius:12px;
-      font-weight:700;
-      cursor:pointer;
-      text-align:center;
-      margin-top:10px;
-      box-shadow: 0 8px 20px rgba(0,130,200,0.08);
+<!-- PAGES -->
+<div id="lifestyle" class="page">
+  <div class="card">
+    <h2>🐟 Aquatic Lifestyle</h2>
+    <p>Aquatic animals are adapted to live in water…</p>
+    <img class="image" src="https://images.unsplash.com/photo-1551041777-575d385554f1?q=80">
+    <button class="backBtn" onclick="goHome()">⬅ Back</button>
+  </div>
+</div>
+
+<div id="importance" class="page">
+  <div class="card">
+    <h2>🌊 Why Aquatic Ecosystems Matter</h2>
+    <p>They regulate temperature, support life, provide oxygen…</p>
+    <img class="image" src="https://images.unsplash.com/photo-1509358271058-d34347573516?q=80">
+    <button class="backBtn" onclick="goHome()">⬅ Back</button>
+  </div>
+</div>
+
+<div id="destruction" class="page">
+  <div class="card">
+    <h2>⚠️ Destruction</h2>
+    <p>Plastic, oil spills, climate change… all causing harm.</p>
+    <img class="image" src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Ocean_Plastic.jpg">
+    <button class="backBtn" onclick="goHome()">⬅ Back</button>
+  </div>
+</div>
+
+<div id="game" class="page">
+  <div class="card">
+    <h2>🎮 Save The Ocean</h2>
+    <p>Click trash 🗑️ — avoid fish 🐟!</p>
+    <h3 id="score">Score: 0</h3>
+    <div id="gameBox"></div>
+    <button class="backBtn" onclick="startGame()">▶ Start</button>
+    <button class="backBtn" onclick="goHome()">⬅ Back</button>
+  </div>
+</div>
+
+<script>
+/* ---------------------------- */
+/* SHOW PAGES / HOME            */
+/* ---------------------------- */
+function showPage(id){
+    document.querySelector(".hero").style.display="none";
+    document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+    document.getElementById(id).style.display="block";
+}
+function goHome(){
+    document.querySelector(".hero").style.display="flex";
+    document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+}
+
+/* ---------------------------- */
+/* THEME SWITCH                 */
+/* ---------------------------- */
+const switcher=document.getElementById("themeSwitch");
+
+if(localStorage.getItem("theme")=="light"){
+  document.body.classList.add("light");
+  switcher.checked=true;
+}
+
+switcher.addEventListener("change",()=>{
+  if(switcher.checked){
+    document.body.classList.add("light");
+    localStorage.setItem("theme","light");
+  } else {
+    document.body.classList.remove("light");
+    localStorage.setItem("theme","dark");
+  }
+});
+
+/* ---------------------------- */
+/* GAME                         */
+/* ---------------------------- */
+let score=0;
+function startGame(){
+  score=0;
+  document.getElementById("score").innerText="Score: "+score;
+  const box=document.getElementById("gameBox");
+  box.innerHTML="";
+
+  for(let i=0;i<8;i++){
+    spawnObject();
+  }
+}
+
+function spawnObject(){
+  const box=document.getElementById("gameBox");
+  const obj=document.createElement("img");
+
+  const isGarbage=Math.random()>0.5;
+  obj.src=isGarbage
+    ?"https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Trash_bin_icon.svg/512px-Trash_bin_icon.svg.png"
+    :"https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Clown_fish.png/640px-Clown_fish.png";
+
+  obj.className=isGarbage?"garbage":"fish";
+  obj.style.left=Math.random()*(box.offsetWidth-60)+"px";
+  obj.style.top=Math.random()*(box.offsetHeight-60)+"px";
+
+  obj.onclick=()=>{
+    if(isGarbage){
+      score++;
+    } else {
+      score--;
     }
-    .fact{
-      display:none;
-      padding:12px;
-      margin-top:10px;
-      border-radius:10px;
-      background: linear-gradient(180deg, rgba(0,200,255,0.08), rgba(0,120,180,0.06));
-      font-weight:700;
-    }
+    document.getElementById("score").innerText="Score: "+score;
+    obj.remove();
+    spawnObject();
+  }
 
-    /* back/start buttons */
-    .controls { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
-    .btn {
-      padding:10px 16px;
-      border-radius:10px;
-      border:none;
-      cursor:pointer;
-      font-weight:800;
-      color:white;
-      background: linear-gradient(180deg,var(--accent),var(--accent-2));
-      box-shadow: 0 10px 30px rgba(0,120,200,0.14);
-      transform-origin:center;
-      transition: transform 220ms cubic-bezier(.2,.9,.3,1), box-shadow 220ms;
-    }
-    .btn:active{ transform: scale(0.96); }
-    .btn.ghost{ background: transparent; color:var(--muted); box-shadow:none; border:1px solid rgba(0,0,0,0.06); }
+  box.appendChild(obj);
+}
+</script>
 
-    /* ---------- GAME BOX ---------- */
-    #gameBox {
-      width:100%;
-      height:340px;
-      border-radius:12px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.65), rgba(220,245,255,0.6));
-      overflow:hidden;
-      position:relative;
-      box-shadow: inset 0 -30px 40px rgba(0,0,0,0.02);
-      margin-
+</body>
+</html>
+
