@@ -3,16 +3,266 @@
 <head>
   <meta charset="UTF-8">
   <title>Aquatic Ecosystem Deep Explorer</title>
-  <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* -------- GENERAL -------- */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Roboto, sans-serif;
+}
+
+body {
+  background: #e8f8ff;
+  color: #000;
+  transition: background 0.4s, color 0.4s;
+}
+
+/* -------- DARK MODE -------- */
+
+body.dark {
+  background: #0d1b2a;
+  color: #f5f5f5;
+}
+
+/* -------- THEME TOGGLE -------- */
+
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.switch {
+  width: 55px;
+  height: 28px;
+  background: #ccc;
+  display: inline-block;
+  border-radius: 40px;
+  position: relative;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.switch::after {
+  content: "🌞";
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+#themeSwitch:checked + .switch {
+  background: #444;
+}
+
+#themeSwitch:checked + .switch::after {
+  content: "🌙";
+  transform: translateX(27px);
+}
+
+/* DARK MODE ELEMENTS */
+
+body.dark .card {
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+}
+
+body.dark .menuBtn {
+  background: #142c44;
+  color: #fff;
+  box-shadow: 0 0 12px cyan;
+}
+
+body.dark .image {
+  box-shadow: 0 0 18px rgba(0, 255, 255, 0.5);
+}
+
+body.dark .fact {
+  background: rgba(20, 120, 150, 0.6);
+}
+
+body.dark .hiddenBox {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* -------- HERO -------- */
+
+.hero {
+  height: 100vh;
+  text-align: center;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#bg-video {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.title {
+  font-size: 45px;
+  font-weight: 700;
+  text-shadow: 0 0 12px #00eaff;
+  margin-bottom: 25px;
+}
+
+/* -------- MENU -------- */
+
+.menu button {
+  padding: 15px 35px;
+  margin: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  background: #0066ff;
+  color: white;
+  box-shadow: 0 0 10px #00bfff;
+  transition: 0.3s;
+}
+
+.menu button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 18px #00e5ff;
+}
+
+/* -------- PAGES -------- */
+
+.page {
+  display: none;
+  padding: 40px;
+}
+
+.card {
+  background: rgba(255,255,255,0.85);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 0 15px #00bfff;
+  max-width: 900px;
+  margin: auto;
+  animation: fade 0.5s;
+}
+
+@keyframes fade {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+.image {
+  width: 100%;
+  border-radius: 15px;
+  margin: 15px 0;
+  box-shadow: 0 0 10px #0094d4;
+  transition: 0.3s;
+}
+
+.image:hover {
+  transform: scale(1.03);
+}
+
+/* Hidden fact box */
+
+.hiddenBox {
+  padding: 12px;
+  background: #c3ecff;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.fact {
+  margin-top: 8px;
+  padding: 12px;
+  background: #99e6ff;
+  border-radius: 12px;
+  display: none;
+}
+
+/* Back Button */
+
+.backBtn, .startBtn {
+  margin-top: 15px;
+  padding: 12px 28px;
+  background: #0044cc;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 0 10px #00cfff;
+  transition: 0.3s;
+}
+
+.backBtn:hover, .startBtn:hover {
+  transform: scale(1.1);
+}
+
+/* -------- GAME -------- */
+
+#gameBox {
+  width: 100%;
+  height: 300px;
+  background: #d4f2ff;
+  border-radius: 15px;
+  margin: 20px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+body.dark #gameBox {
+  background: #16324f;
+}
+
+.gameObject {
+  position: absolute;
+  font-size: 35px;
+  cursor: pointer;
+}
+
+</style>
 </head>
+
 <body>
 
+<!-- THEME SWITCH -->
+<div class="theme-toggle">
+  <input type="checkbox" id="themeSwitch">
+  <label for="themeSwitch" class="switch"></label>
+</div>
+
+<!-- HERO -->
 <div class="hero" id="home">
-    <video autoplay muted loop id="bg-video">
-        <source src="https://assets.mixkit.co/videos/preview/mixkit-sea-turtle-swimming-camera-follows-1225-large.mp4" type="video/mp4">
-    </video>
-  <h1>🌊 Aquatic Ecosystem Deep Explorer 🌊</h1>
+  <video autoplay muted loop id="bg-video">
+    <source src="https://assets.mixkit.co/videos/preview/mixkit-sea-turtle-swimming-camera-follows-1225-large.mp4" type="video/mp4">
+  </video>
+
+  <h1 class="title">🌊 Aquatic Ecosystem Deep Explorer 🌊</h1>
+
   <div class="menu">
     <button onclick="showPage('lifestyle')">🐠 Aquatic Lifestyle</button>
     <button onclick="showPage('importance')">🌎 Importance</button>
@@ -25,88 +275,164 @@
 <div id="lifestyle" class="page">
   <div class="card">
     <h2>🐟 Aquatic Lifestyle</h2>
-    <p>
-      Aquatic organisms live in water and have special adaptations that help them survive.
-      Most fish breathe using <b>gills</b> which absorb oxygen from water. Their <b>fins</b>
-      help them steer and balance while swimming.
-    </p>
 
-    <p>
-      Some animals like dolphins and whales are mammals. They breathe air using lungs
-      and must come to the surface to inhale oxygen. Many aquatic animals have
-      streamlined bodies which reduce water resistance and help them move faster.
-    </p>
+    <p>Fish use <b>gills</b> to breathe underwater and <b>fins</b> to steer. Dolphins and whales use lungs just like humans.</p>
 
-    <div class="fact">Amazing Fact: Sharks have been alive for more than 400 million years!</div>
+    <p>Many underwater creatures have smooth body shapes that help them glide through water easily.</p>
+
+    <div class="hiddenBox" onclick="reveal(this)">✨ Tap to reveal a fun fact!</div>
+    <div class="fact">Sharks are older than trees — over 400 million years old!</div>
 
     <img class="image" src="https://images.unsplash.com/photo-1551041777-575d385554f1?q=80&w=2070&auto=format&fit=crop">
     <img class="image" src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Clownfish.jpg">
-      <button class="backBtn" onclick="goHome()">⬅ Back</button>
+
+    <button class="backBtn" onclick="goHome()">⬅ Back</button>
   </div>
 </div>
 
 <!-- IMPORTANCE PAGE -->
 <div id="importance" class="page">
   <div class="card">
-    <h2>🌊 Why Aquatic Ecosystems Are Important</h2>
-    <p>
-      Aquatic ecosystems play a major role in maintaining Earth’s balance. Oceans absorb
-      large amounts of carbon dioxide, which helps reduce climate change. They also regulate
-      global temperatures.
-    </p>
+    <h2>🌊 Why Aquatic Ecosystems Matter</h2>
 
-    <p>
-      Millions of people depend on oceans and rivers for food, drinking water, jobs, and transport.
-      Many medicines used to treat diseases are made from marine plants and animals.
-    </p>
+    <p>Oceans absorb carbon dioxide and cool the planet. They help regulate Earth's climate.</p>
 
-    <div class="fact">Did you know? More than 70% of Earth’s surface is covered by water!</div>
+    <p>Humans rely on aquatic resources for food, water, medicine, transportation, and jobs.</p>
+
+    <div class="hiddenBox" onclick="reveal(this)">📌 Tap for a mind-blowing stat!</div>
+    <div class="fact">Over 70% of Earth’s surface is water!</div>
 
     <img class="image" src="https://images.unsplash.com/photo-1509358271058-d34347573516?q=80&w=2070&auto=format&fit=crop">
-      <button class="backBtn" onclick="goHome()">⬅ Back</button>
+
+    <button class="backBtn" onclick="goHome()">⬅ Back</button>
   </div>
 </div>
 
 <!-- DESTRUCTION PAGE -->
 <div id="destruction" class="page">
-    <div class="card">
-        <h2>⚠️ Destruction of Aquatic Ecosystems</h2>
-        <p>
-          Human activities are the main cause of aquatic ecosystem destruction. Plastic waste
-          often ends up in oceans and is eaten by fish and turtles, causing their death.
-        </p>
+  <div class="card">
+    <h2>⚠️ Destruction of Aquatic Ecosystems</h2>
 
-        <p>
-          Oil spills create thick layers of oil that block sunlight and oxygen from reaching
-          marine plants and animals. Climate change increases ocean temperature, causing coral
-          reefs to bleach and die.
-        </p>
+    <p>Plastic waste, oil spills, and pollution damage marine life. Many animals eat plastic thinking it's food.</p>
 
-        <div class="fact">Shocking Fact: A plastic bottle can take 450 years to decompose.</div>
+    <p>Coral reefs bleach due to rising temperatures, killing entire underwater communities.</p>
 
-        <img class="image" src="https://images.unsplash.com/photo-1574304246473-3d4373a8a30b?q=80&w=2070&auto=format&fit=crop">
-        <img class="image" src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Ocean_Plastic.jpg">
-          <button class="backBtn" onclick="goHome()">⬅ Back</button>
-    </div>
+    <div class="hiddenBox" onclick="reveal(this)">🚨 Tap for a shocking fact!</div>
+    <div class="fact">Plastic bottles can take 450+ years to decompose.</div>
+
+    <img class="image" src="https://images.unsplash.com/photo-1574304246473-3d4373a8a30b?q=80&w=2070&auto=format&fit=crop">
+    <img class="image" src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Ocean_Plastic.jpg">
+
+    <button class="backBtn" onclick="goHome()">⬅ Back</button>
+  </div>
 </div>
 
 <!-- GAME PAGE -->
 <div id="game" class="page">
-    <div class="card">
-  <h2>🎮 Save The Ocean</h2>
-  <p>Click 🗑️ to clean the ocean. Do NOT click 🐟</p>
-  <h3 id="score">Score: 0</h3>
-  <div id="gameBox"></div>
-  <button class="backBtn" onclick="startGame()">▶ Start Game</button>
-  <button class="backBtn" onclick="goHome()">⬅ Back</button>
-    </div>
+  <div class="card">
+    <h2>🎮 Save The Ocean</h2>
+    <p>Tap the 🗑️ trash. Avoid the 🐟 fish!</p>
+
+    <h3 id="score">Score: 0</h3>
+
+    <div id="gameBox"></div>
+
+    <button class="startBtn" onclick="startGame()">▶ Start Game</button>
+    <button class="backBtn" onclick="goHome()">⬅ Back</button>
+  </div>
 </div>
 
-<!-- Sounds -->
+<!-- SOUNDS -->
 <audio id="cleanSound" src="https://www.soundjay.com/button/sounds/button-16.mp3"></audio>
 <audio id="splashSound" src="https://www.soundjay.com/water/sounds/water-splash-1.mp3"></audio>
 
-<script src="js/main.js"></script>
+<script>
+
+/* -------- PAGE SWITCHING -------- */
+
+function showPage(id) {
+  document.querySelector(".hero").style.display = "none";
+  document.querySelectorAll(".page").forEach(p => p.style.display = "none");
+  document.getElementById(id).style.display = "block";
+}
+
+function goHome() {
+  document.querySelector(".hero").style.display = "flex";
+  document.querySelectorAll(".page").forEach(p => p.style.display = "none");
+}
+
+/* -------- FACT REVEAL -------- */
+
+function reveal(box) {
+  let fact = box.nextElementSibling;
+  fact.style.display = "block";
+  box.style.display = "none";
+}
+
+/* -------- DARK MODE SAVING -------- */
+
+const themeSwitch = document.getElementById("themeSwitch");
+
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+  themeSwitch.checked = true;
+}
+
+themeSwitch.addEventListener("change", () => {
+  if (themeSwitch.checked) {
+    document.body.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  } else {
+    document.body.classList.remove("dark");
+    localStorage.setItem("theme", "light");
+  }
+});
+
+/* -------- GAME -------- */
+
+let score = 0;
+let gameInterval;
+
+function startGame() {
+  document.getElementById("gameBox").innerHTML = "";
+  score = 0;
+  document.getElementById("score").innerText = "Score: 0";
+
+  clearInterval(gameInterval);
+  gameInterval = setInterval(spawnObject, 800);
+}
+
+function spawnObject() {
+  let box = document.getElementById("gameBox");
+  let item = document.createElement("div");
+  item.classList.add("gameObject");
+
+  let isTrash = Math.random() > 0.5;
+
+  item.innerText = isTrash ? "🗑️" : "🐟";
+
+  item.style.left = Math.random() * (box.offsetWidth - 40) + "px";
+  item.style.top = Math.random() * (box.offsetHeight - 40) + "px";
+
+  item.onclick = function () {
+    if (item.innerText === "🗑️") {
+      score++;
+      document.getElementById("score").innerText = "Score: " + score;
+      document.getElementById("cleanSound").play();
+    } else {
+      score--;
+      document.getElementById("score").innerText = "Score: " + score;
+      document.getElementById("splashSound").play();
+    }
+    item.remove();
+  };
+
+  box.appendChild(item);
+
+  setTimeout(() => item.remove(), 2000);
+}
+
+</script>
 
 </body>
 </html>
