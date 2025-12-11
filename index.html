@@ -1,307 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Aquatic Ecosystem Deep Explorer</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Aquatic Ecosystem Deep Explorer (fixed)</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
-/* --------------------------- GLOBAL --------------------------- */
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    overflow-x: hidden;
-    background: #0b1e2d;
-    color: white;
-    transition: background 0.3s, color 0.3s;
-}
+  :root{
+    --primary-bg:#051923;
+    --secondary-bg:#003554;
+    --accent:#00a6fb;
+    --text:#ffffff;
+    --card-bg:rgba(0,20,40,0.75);
+    --game-bg:#001219;
+    --font-main:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  }
+  body.light-mode{
+    --primary-bg:#e0f7fa;
+    --secondary-bg:#b2ebf2;
+    --accent:#006064;
+    --text:#002233;
+    --card-bg:rgba(255,255,255,0.95);
+    --game-bg:#b3e5fc;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:var(--font-main);
+    background:var(--primary-bg);
+    color:var(--text);
+    transition:background .35s,color .35s;
+    overflow-x:hidden;
+  }
 
-.light-mode {
-    background: #e3f5ff;
-    color: #000;
-}
+  /* BG video */
+  #bg-video{
+    position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;
+    filter:brightness(.4);transition:filter .4s;
+  }
+  body.light-mode #bg-video{filter:brightness(1) opacity(.3)}
 
-/* --------------------------- HERO + MENU --------------------------- */
+  /* navbar */
+  .navbar{
+    position:fixed;top:0;left:0;right:0;padding:14px 26px;
+    display:flex;align-items:center;justify-content:space-between;
+    z-index:120;background:linear-gradient(180deg, rgba(0,0,0,.6), transparent);
+  }
+  .brand{display:flex;gap:10px;align-items:center;font-weight:700;font-size:1.2rem;text-shadow:0 0 10px var(--accent)}
+  #modeToggle{cursor:pointer;border-radius:20px;padding:8px 14px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:var(--text);backdrop-filter:blur(6px)}
+  body.light-mode #modeToggle{background:rgba(0,0,0,.06);color:var(--text);border-color:rgba(0,0,0,.12)}
 
-.hero {
-    height: 100vh;
-    position: relative;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
+  /* pages */
+  .page{display:none;min-height:100vh;padding-top:84px;padding-bottom:40px;align-items:center;justify-content:flex-start}
+  .page.active{display:flex;flex-direction:column;align-items:center}
+  .hero-title{font-size:3rem;margin:30px 0;text-shadow:0 4px 18px rgba(0,170,255,.5);animation:floatText 4s ease-in-out infinite}
+  @keyframes floatText{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 
-#bg-video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-    filter: brightness(50%);
-}
+  .menu{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:900px}
+  .menu-btn{padding:14px 26px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);cursor:pointer;display:flex;gap:10px;align-items:center;font-weight:600;transition:.22s;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+  .menu-btn:hover{transform:translateY(-6px);background:var(--accent);box-shadow:0 12px 28px rgba(0,166,251,.25)}
 
-h1 {
-    font-size: 3rem;
-    margin-bottom: 30px;
-    animation: float 4s infinite ease-in-out;
-    text-shadow: 0 0 20px #00aaff;
-}
+  .card{background:var(--card-bg);padding:34px;border-radius:18px;max-width:980px;width:92%;margin:18px auto;text-align:center;backdrop-filter:blur(8px)}
+  .card h2{color:var(--accent);margin:0 0 10px}
+  .image-grid{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:16px 0}
+  .image-grid img{max-width:350px;height:200px;object-fit:cover;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.3)}
 
-@keyframes float {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0); }
-}
+  .back-btn{border-radius:28px;padding:10px 22px;border:2px solid var(--accent);background:transparent;color:var(--text);cursor:pointer;font-weight:700}
+  .back-btn:hover{background:var(--accent);color:white}
 
-.menu {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 20px;
-}
+  /* game */
+  .game-stats{display:flex;justify-content:space-between;width:100%;font-weight:700;padding:10px;background:rgba(0,0,0,.18);border-radius:10px}
+  #gameBox{width:100%;height:420px;border-radius:12px;background:var(--game-bg);position:relative;overflow:hidden;border:2px solid rgba(255,255,255,.06);box-shadow:inset 0 0 24px rgba(0,0,0,.45)}
+  .game-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:rgba(0,0,0,.7);z-index:40;border-radius:12px}
+  .hidden{display:none !important}
+  .play-btn{padding:14px 30px;border-radius:36px;border:none;background:#4cd137;color:#fff;font-weight:800;cursor:pointer;font-size:1.2rem;display:flex;gap:10px;align-items:center}
+  .play-btn:hover{transform:scale(1.06)}
 
-button {
-    padding: 12px 25px;
-    font-size: 1.1rem;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    background: #0077ff;
-    color: white;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    transition: 0.2s;
-}
+  /* entity (image or fallback) */
+  .entity{
+    position:absolute;width:56px;height:56px;user-select:none;cursor:pointer;transition:transform .08s;z-index:30;pointer-events:auto;
+    display:flex;align-items:center;justify-content:center;font-size:34px;
+  }
+  @media (max-width:600px){.entity{width:46px;height:46px;font-size:28px}}
 
-button:hover {
-    transform: scale(1.08);
-    background: #0099ff;
-}
+  /* feedback */
+  .feedback{position:fixed;pointer-events:none;font-weight:800;font-size:18px;animation:floatUpFade .8s forwards;z-index:9999}
+  .positive{color:#4cd137;text-shadow:0 0 6px rgba(0,0,0,.6)}
+  .negative{color:#ff6b6b;text-shadow:0 0 6px rgba(0,0,0,.6)}
+  @keyframes floatUpFade{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-36px);opacity:0}}
 
-.light-mode button {
-    background: #0077cc;
-    color: white;
-}
+  /* bubbles */
+  #bubbles-container{position:fixed;inset:0;pointer-events:none;z-index:-1}
+  .bubble{position:absolute;border-radius:50%;background:rgba(255,255,255,.08);animation:floatUp 9s linear infinite}
+  @keyframes floatUp{0%{transform:translateY(0);opacity:0}50%{opacity:.6}100%{transform:translateY(-110vh);opacity:0}}
 
-/* Dark Mode Switch */
-#modeToggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 8px 18px;
-    background: #111;
-    border-radius: 8px;
-}
-
-/* --------------------------- PAGES --------------------------- */
-
-.page {
-    display: none;
-    padding: 40px;
-    text-align: center;
-    min-height: 100vh;
-}
-
-.page.active {
-    display: block;
-    animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-.card {
-    max-width: 900px;
-    margin: auto;
-    background: rgba(0,0,0,0.55);
-    padding: 25px;
-    border-radius: 20px;
-    backdrop-filter: blur(4px);
-}
-
-/* Light mode card */
-.light-mode .card {
-    background: rgba(255,255,255,0.6);
-}
-
-/* images */
-.image {
-    width: 45%;
-    margin: 10px;
-    border-radius: 15px;
-}
-
-/* Fact */
-.fact {
-    background: #004466;
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-.light-mode .fact {
-    background: #88cfff;
-}
-
-/* --------------------------- GAME --------------------------- */
-
-#gameBox {
-    width: 90%;
-    max-width: 600px;
-    height: 400px;
-    background: #002233;
-    margin: auto;
-    position: relative;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.light-mode #gameBox {
-    background: #99d6ff;
-}
-
-.garbage, .fish {
-    position: absolute;
-    width: 60px;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.garbage:hover, .fish:hover {
-    transform: scale(1.2);
-}
+  /* responsive */
+  @media (max-width:600px){.hero-title{font-size:2rem}.menu-btn{width:100%;justify-content:center;padding:12px}}
 </style>
 </head>
 <body>
 
-<button id="modeToggle" onclick="toggleMode()">🌙 Mode</button>
+<!-- background video -->
+<video autoplay muted loop playsinline id="bg-video">
+  <source src="https://assets.mixkit.co/videos/preview/mixkit-under-water-view-of-the-ocean-surface-1227-large.mp4" type="video/mp4">
+</video>
 
-<!-- HOME -->
-<div class="hero page active" id="home">
-    <video autoplay muted loop id="bg-video">
-        <source src="https://assets.mixkit.co/videos/preview/mixkit-sea-turtle-swimming-camera-follows-1225-large.mp4" type="video/mp4">
-    </video>
+<div id="bubbles-container"></div>
 
-    <h1>🌊 Aquatic Ecosystem Deep Explorer 🌊</h1>
-
-    <div class="menu">
-        <button onclick="showPage('lifestyle')">🐠 Aquatic Lifestyle</button>
-        <button onclick="showPage('importance')">🌎 Importance</button>
-        <button onclick="showPage('destruction')">⚠️ Destruction</button>
-        <button onclick="showPage('game')">🎮 Game</button>
-    </div>
-</div>
-
-<!-- LIFESTYLE -->
-<div id="lifestyle" class="page">
-    <div class="card">
-        <h2>🐟 Aquatic Lifestyle</h2>
-        <p>Aquatic creatures have special adaptations like fins, gills, streamlined bodies, and more!</p>
-        <img class="image" src="https://images.unsplash.com/photo-1551041777-575d385554f1?q=80&w=1000">
-        <img class="image" src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Clownfish.jpg">
-        <br><br>
-        <button onclick="showPage('home')">⬅ Back</button>
-    </div>
-</div>
-
-<!-- IMPORTANCE -->
-<div id="importance" class="page">
-    <div class="card">
-        <h2>🌊 Why Aquatic Ecosystems Matter</h2>
-        <p>They absorb CO₂, regulate climate, provide food, jobs, and medicine for millions.</p>
-        <img class="image" src="https://images.unsplash.com/photo-1509358271058-d34347573516?q=80&w=1000">
-        <br><br>
-        <button onclick="showPage('home')">⬅ Back</button>
-    </div>
-</div>
-
-<!-- DESTRUCTION -->
-<div id="destruction" class="page">
-    <div class="card">
-        <h2>⚠️ Dangers & Destruction</h2>
-        <p>Pollution, climate change, oil spills, and plastic waste severely damage ocean life.</p>
-        <img class="image" src="https://images.unsplash.com/photo-1574304246473-3d4373a8a30b?q=80&w=1000">
-        <img class="image" src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Ocean_Plastic.jpg">
-        <br><br>
-        <button onclick="showPage('home')">⬅ Back</button>
-    </div>
-</div>
-
-<!-- GAME -->
-<div id="game" class="page">
-    <div class="card">
-        <h2>🎮 Save The Ocean</h2>
-        <p>Click 🗑️ garbage, avoid 🐟 fish!</p>
-        <h3 id="score">Score: 0</h3>
-
-        <div id="gameBox"></div>
-        <br>
-        <button onclick="startGame()">▶ Start Game</button>
-        <button onclick="showPage('home')">⬅ Back</button>
-    </div>
-</div>
-
-<script>
-/* --------------------------- PAGE SWITCH --------------------------- */
-
-function showPage(id) {
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-}
-
-/* --------------------------- DARK MODE --------------------------- */
-function toggleMode() {
-    document.body.classList.toggle("light-mode");
-}
-
-/* --------------------------- GAME LOGIC --------------------------- */
-
-let score = 0;
-
-function startGame() {
-    score = 0;
-    document.getElementById("score").innerText = "Score: 0";
-
-    const gameBox = document.getElementById("gameBox");
-    gameBox.innerHTML = "";
-
-    spawnItem();
-}
-
-function spawnItem() {
-    const gameBox = document.getElementById("gameBox");
-    if (!document.getElementById("game").classList.contains("active")) return;
-
-    const isGarbage = Math.random() < 0.6;
-
-    const img = document.createElement("img");
-    img.classList.add(isGarbage ? "garbage" : "fish");
-
-    img.src = isGarbage
-        ? "https://cdn-icons-png.flaticon.com/512/5651/5651633.png"
-        : "https://cdn-icons-png.flaticon.com/512/497/497348.png";
-
-    img.style.left = Math.random() * 90 + "%";
-    img.style.top = Math.random() * 80 + "%";
-
-    img.onclick = () => {
-        if (isGarbage) {
-            score++;
-        } else {
-            score--;
-        }
-        document.getElementById("score").innerText = "Score: " + score;
-        img.remove();
-    };
-
-    gameBox.appendChild(img);
-
-    setTimeout(() => img.remove(), 3000);
-    setTimeout(spawnItem, 900);
-}
-</script>
-
-</body>
-</html>
+<nav class="navbar">
+  <div class="brand">
+    <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f30a.png" width="28" height="28" alt="wave">
+    Deep Explorer
+  </div>
+  <button id="modeToggle" onclick="toggleMode(
