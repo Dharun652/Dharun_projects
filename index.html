@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Aquatic Ecosystem Deep Explorer — Animated</title>
+  <title>Aquatic Ecosystem Deep Explorer — Debugged</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
@@ -69,7 +69,9 @@
       cursor:pointer;
       display:inline-block;
       transition: background 300ms;
+      outline: none;
     }
+    .switch:focus { box-shadow: 0 0 0 4px rgba(0,180,255,0.08); }
     .switch__knob{
       width:26px;
       height:26px;
@@ -176,7 +178,7 @@
       flex-wrap:wrap;
       margin-top:14px;
     }
-    .menu button{
+    .menuBtn{
       --btnBg: linear-gradient(180deg,var(--accent),var(--accent-2));
       padding:11px 18px;
       border-radius:12px;
@@ -189,12 +191,12 @@
       transition: transform 160ms cubic-bezier(.2,.9,.3,1), box-shadow 200ms, filter 180ms;
       backdrop-filter: blur(6px);
     }
-    .menu button:hover{
+    .menuBtn:hover{
       transform: translateY(-6px) scale(1.03);
       box-shadow: 0 18px 50px rgba(0,140,220,0.18);
       filter:brightness(1.04);
     }
-    .menu button:active{
+    .menuBtn:active{
       transform: translateY(-2px) scale(0.98);
     }
 
@@ -271,139 +273,4 @@
       overflow:hidden;
       position:relative;
       box-shadow: inset 0 -30px 40px rgba(0,0,0,0.02);
-      margin-top:12px;
-    }
-    body.dark #gameBox {
-      background: linear-gradient(180deg, rgba(8,18,28,0.45), rgba(2,28,44,0.35));
-    }
-
-    .gameObject {
-      position:absolute;
-      font-size:34px;
-      user-select:none;
-      cursor:pointer;
-      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.12));
-      transition: transform 160ms;
-      will-change: transform, left, top;
-    }
-    .gameObject:hover { transform: scale(1.12) rotate(-6deg); }
-
-    /* float + sway animations for objects (speed set inline per element) */
-    @keyframes floatUp {
-      0% { transform: translateY(0) translateX(0) rotate(0deg); }
-      25% { transform: translateY(-12px) translateX(-6px) rotate(-3deg); }
-      50% { transform: translateY(0) translateX(6px) rotate(2deg); }
-      75% { transform: translateY(10px) translateX(-6px) rotate(-2deg); }
-      100% { transform: translateY(0) translateX(0) rotate(0deg); }
-    }
-
-    /* confetti pieces */
-    .confetti {
-      position:absolute;
-      width:10px;height:14px;
-      border-radius:2px;
-      opacity:0.95;
-      will-change: transform, opacity;
-      pointer-events:none;
-      transform: translateY(0);
-      animation: confettiFall 1200ms linear forwards;
-    }
-    @keyframes confettiFall {
-      to { transform: translateY(420px) rotate(420deg) translateX(40px); opacity:0; }
-    }
-
-    /* responsive */
-    @media (max-width:720px){
-      .images-row{ grid-template-columns: 1fr; }
-      .hero { padding:36px 12px; }
-      .title { font-size: 28px; }
-    }
-
-  </style>
-</head>
-<body>
-
-  <!-- THEME TOGGLE -->
-  <div class="theme-toggle" aria-hidden="false">
-    <div class="tiny">Theme</div>
-    <div id="themeSwitch" class="switch" role="switch" aria-checked="false" tabindex="0">
-      <div class="switch__knob">☀️</div>
-    </div>
-  </div>
-
-  <!-- HERO -->
-  <section class="hero" id="home">
-    <video autoplay muted loop id="bg-video" playsinline>
-      <source src="https://assets.mixkit.co/videos/preview/mixkit-sea-turtle-swimming-camera-follows-1225-large.mp4" type="video/mp4">
-    </video>
-
-    <div class="bubbles" aria-hidden="true"></div>
-
-    <div class="content">
-      <div class="title">🌊 Aquatic Ecosystem Deep Explorer</div>
-      <div class="menu" role="navigation" aria-label="Main">
-        <button class="menuBtn" onclick="showPage('lifestyle')">🐠 Aquatic Lifestyle</button>
-        <button class="menuBtn" onclick="showPage('importance')">🌎 Importance</button>
-        <button class="menuBtn" onclick="showPage('destruction')">⚠️ Destruction</button>
-        <button class="menuBtn" onclick="showPage('game')">🎮 Game</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- PAGES -->
-  <main>
-    <!-- LIFESTYLE -->
-    <section id="lifestyle" class="page" aria-hidden="true">
-      <article class="card">
-        <h2>🐟 Aquatic Lifestyle</h2>
-        <p>
-          Aquatic animals have clever adaptations: fish use <b>gills</b>, mammals like whales use <b>lungs</b>.
-          Streamlined bodies and fins help reduce drag and make swimming efficient.
-        </p>
-
-        <div class="hiddenBox" onclick="reveal(this)" role="button" aria-pressed="false">✨ Tap to reveal a fun fact!</div>
-        <div class="fact">Sharks have existed for over 400 million years — before dinosaurs roamed!</div>
-
-        <div class="images-row" aria-hidden="false">
-          <img src="https://images.unsplash.com/photo-1551041777-575d385554f1?q=80&w=1600&auto=format&fit=crop" alt="Fish swimming">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Clownfish.jpg" alt="Clownfish">
-        </div>
-
-        <div class="controls">
-          <button class="btn ghost" onclick="goHome()">⬅ Back</button>
-        </div>
-      </article>
-    </section>
-
-    <!-- IMPORTANCE -->
-    <section id="importance" class="page" aria-hidden="true">
-      <article class="card">
-        <h2>🌊 Why Aquatic Ecosystems Matter</h2>
-        <p>
-          Oceans absorb carbon dioxide, regulate climate, and are a huge source of food, medicine, and jobs worldwide.
-        </p>
-        <div class="hiddenBox" onclick="reveal(this)">📌 Tap for a mind-blowing stat!</div>
-        <div class="fact">Over 70% of Earth's surface is covered in water — so these ecosystems keep the planet alive.</div>
-
-        <div class="images-row">
-          <img src="https://images.unsplash.com/photo-1509358271058-d34347573516?q=80&w=1600&auto=format&fit=crop" alt="Ocean waves">
-          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop" alt="Coastline">
-        </div>
-
-        <div class="controls">
-          <button class="btn ghost" onclick="goHome()">⬅ Back</button>
-        </div>
-      </article>
-    </section>
-
-    <!-- DESTRUCTION -->
-    <section id="destruction" class="page" aria-hidden="true">
-      <article class="card">
-        <h2>⚠️ Destruction of Aquatic Ecosystems</h2>
-        <p>
-          Pollution like plastics and oil harms wildlife. Warming oceans cause coral bleaching and threaten marine life.
-        </p>
-        <div class="hiddenBox" onclick="reveal(this)">🚨 Tap for a shocking fact!</div>
-        <div class="fact">A plastic bottle can take 450+ years to break down — so we must reduce and recycle.</div>
-
-        <
+      margin-
